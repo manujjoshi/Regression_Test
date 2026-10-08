@@ -11,7 +11,7 @@ from pathlib import Path
 
 import joblib
 import pandas as pd
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 
 MODEL_PATH = Path(__file__).parent / "student_score_model.joblib"
 
@@ -35,6 +35,12 @@ def index():
                 pred = model.predict(pd.DataFrame({"Hours": [value]}))[0]
                 score = f"{min(max(pred, 0), 100):.2f}"
     return render_template("index.html", hours=hours, score=score, error=error)
+
+
+@app.route("/health")
+def health():
+    # RENDER_GIT_COMMIT is set by Render; CI uses it to confirm the new code is live
+    return jsonify(status="ok", commit=os.environ.get("RENDER_GIT_COMMIT", "local"))
 
 
 if __name__ == "__main__":

@@ -31,6 +31,10 @@ jobs:
     needs: test
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    # A newer push supersedes an in-progress deploy instead of racing it
+    concurrency:
+      group: render-deploy
+      cancel-in-progress: true
     steps:
       - name: Trigger Render deploy
         env:
@@ -41,3 +45,23 @@ jobs:
             exit 1
           fi
           curl --fail-with-body -sS -X POST "$RENDER_DEPLOY_HOOK_URL"
+
+      - name: Wait for Render to serve the new commit
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          if [ -z "$APP_URL" ]; then
+            echo "::warning::APP_URL variable is not set, so the live deploy was not verified. Add it under Settings > Secrets and variables > Actions > Variables."
+            exit 0
+          fi
+          for i in $(seq 1 60); do
+            commit=$(curl -sS --max-time 60 "$APP_URL/health" | python3 -c "import sys,json; print(json.load(sys.stdin).get('commit',''))" 2>/dev/null || true)
+            if [ "$commit" = "$GITHUB_SHA" ]; then
+              echo "Render is serving $GITHUB_SHA"
+              exit 0
+            fi
+            echo "Waiting for deploy (live commit: ${commit:-unreachable})..."
+            sleep 15
+          done
+          echo "::error::Render did not serve commit $GITHUB_SHA within 15 minutes. Check the deploy logs in the Render dashboard."
+          exit 1

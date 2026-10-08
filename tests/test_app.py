@@ -22,3 +22,9 @@ def test_non_numeric_input():
 
 def test_out_of_range_input():
     assert _message("30") == "Hours must be between 0 and 24"
+
+
+def test_health():
+    response = app.test_client().get("/health")
+    assert response.status_code == 200
+    assert response.get_json()["status"] == "ok"

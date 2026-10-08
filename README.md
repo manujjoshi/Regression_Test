@@ -31,3 +31,20 @@ One-time setup:
 2. In the new service, open **Settings > Deploy Hook** and copy the URL.
 3. In GitHub, open **Settings > Secrets and variables > Actions** and add a repository secret
    named `STUDENTSCORE` with that URL.
+4. Under **Settings > Secrets and variables > Actions > Variables**, add a repository variable named
+   `APP_URL` with the site's address (for example `https://student-score-predictor.onrender.com`,
+   no trailing slash). The deploy job uses it to wait until Render is serving the new commit.
+
+## Failure alerts
+
+Any failure turns a GitHub Actions run red, and GitHub emails you about failed runs:
+
+- **Tests fail:** the `test` job fails and nothing is deployed.
+- **Render build or start fails:** the `deploy` job waits up to 15 minutes for `/health` to report the
+  pushed commit and fails if it never does.
+- **Site goes down later:** `.github/workflows/uptime.yml` checks the live site daily at 06:00 UTC
+  (and can be run by hand from the Actions tab).
+
+Make sure email is on under GitHub **Settings > Notifications > System > Actions**
+("Only notify for failed workflows"). Render can also email you about failed deploys under
+**Workspace Settings > Notifications**.
