@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Score Predictor</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 400px; margin: 60px auto; padding: 0 16px; }
+    input { padding: 6px; width: 100px; }
+    button { padding: 6px 16px; }
+    .result { margin-top: 20px; font-size: 1.2em; }
+    .error { margin-top: 20px; color: red; }
+  </style>
+</head>
+<body>
+  <h1>Student Score Predictor</h1>
+  <form method="post">
+    <label for="hours">Hours studied:</label>
+    <input id="hours" name="hours" type="text" value="{{ hours }}" autofocus>
+    <button type="submit">Predict</button>
+  </form>
+
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% elif score %}
+    <p class="result">Predicted score: <strong>{{ score }}%</strong></p>
+  {% endif %}
+</body>
+</html>
