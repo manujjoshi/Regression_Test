@@ -5,18 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Score Predictor</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 400px; margin: 60px auto; padding: 0 16px; }
+    body { font-family: Arial, sans-serif; max-width: 420px; margin: 60px auto; padding: 0 16px; color: #222; }
+    .intro { color: #555; }
     input { padding: 6px; width: 100px; }
     button { padding: 6px 16px; }
     .result { margin-top: 20px; font-size: 1.2em; }
-    .error { margin-top: 20px; color: red; }
+    .error { margin-top: 20px; color: #c00; }
+    .warning { color: #a60; font-size: 0.9em; }
+    footer { margin-top: 40px; color: #777; font-size: 0.85em; }
   </style>
 </head>
 <body>
   <h1>Student Score Predictor</h1>
+  <p class="intro">Enter how many hours a student studies per day to predict their percentage score.</p>
+
   <form method="post">
     <label for="hours">Hours studied:</label>
-    <input id="hours" name="hours" type="text" value="{{ hours }}" autofocus>
+    <input id="hours" name="hours" type="number" step="0.1" min="0" max="24" value="{{ hours }}" required autofocus>
     <button type="submit">Predict</button>
   </form>
 
@@ -24,6 +29,9 @@
     <p class="error">{{ error }}</p>
   {% elif score %}
     <p class="result">Predicted score: <strong>{{ score }}%</strong></p>
+    {% if warning %}<p class="warning">{{ warning }}</p>{% endif %}
   {% endif %}
+
+  <footer>Linear regression model: {{ formula }}</footer>
 </body>
 </html>

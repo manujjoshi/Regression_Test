@@ -28,3 +28,14 @@ def test_health():
     response = app.test_client().get("/health")
     assert response.status_code == 200
     assert response.get_json()["status"] == "ok"
+
+
+def test_warns_outside_training_range():
+    html = app.test_client().post("/", data={"hours": "12"}).get_data(as_text=True)
+    assert "Predicted score" in html
+    assert "less reliable" in html
+
+
+def test_no_warning_inside_training_range():
+    html = app.test_client().post("/", data={"hours": "5"}).get_data(as_text=True)
+    assert "less reliable" not in html

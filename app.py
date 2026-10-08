@@ -13,16 +13,23 @@ import joblib
 import pandas as pd
 from flask import Flask, jsonify, render_template, request
 
-MODEL_PATH = Path(__file__).parent / "student_score_model.joblib"
+BASE_DIR = Path(__file__).parent
+MODEL_PATH = BASE_DIR / "student_score_model.joblib"
+DATA_PATH = BASE_DIR / "student_scores.csv"
 
 app = Flask(__name__)
 model = joblib.load(MODEL_PATH)
+
+# Range of study hours the model was trained on, used to flag less reliable predictions
+_train_hours = pd.read_csv(DATA_PATH)["Hours"]
+MIN_HOURS, MAX_HOURS = _train_hours.min(), _train_hours.max()
+FORMULA = f"Score = {model.coef_[0]:.2f} x Hours + {model.intercept_:.2f}"
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     hours = request.form.get("hours", "")
-    score = error = None
+    score = error = warning = None
     if request.method == "POST":
         try:
             value = float(hours)
@@ -34,7 +41,14 @@ def index():
             else:
                 pred = model.predict(pd.DataFrame({"Hours": [value]}))[0]
                 score = f"{min(max(pred, 0), 100):.2f}"
-    return render_template("index.html", hours=hours, score=score, error=error)
+                if not MIN_HOURS <= value <= MAX_HOURS:
+                    warning = (
+                        f"The model was trained on {MIN_HOURS} to {MAX_HOURS} hours of study, "
+                        "so this prediction is less reliable."
+                    )
+    return render_template(
+        "index.html", hours=hours, score=score, error=error, warning=warning, formula=FORMULA
+    )
 
 
 @app.route("/health")
