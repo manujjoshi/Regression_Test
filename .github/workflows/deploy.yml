@@ -34,10 +34,10 @@ jobs:
     steps:
       - name: Trigger Render deploy
         env:
-          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.STUDENTSCORE }}
         run: |
           if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
-            echo "::error::RENDER_DEPLOY_HOOK_URL secret is not set. Add it under Settings > Secrets and variables > Actions."
+            echo "::error::STUDENTSCORE secret (Render deploy hook URL) is not set. Add it under Settings > Secrets and variables > Actions."
             exit 1
           fi
           curl --fail-with-body -sS -X POST "$RENDER_DEPLOY_HOOK_URL"

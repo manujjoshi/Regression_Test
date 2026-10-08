@@ -30,4 +30,4 @@ One-time setup:
 1. On Render, choose **New > Blueprint**, connect this repo and apply `render.yaml`.
 2. In the new service, open **Settings > Deploy Hook** and copy the URL.
 3. In GitHub, open **Settings > Secrets and variables > Actions** and add a repository secret
-   named `RENDER_DEPLOY_HOOK_URL` with that URL.
+   named `STUDENTSCORE` with that URL.
