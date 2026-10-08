@@ -2,5 +2,3 @@ __pycache__/
 *.pyc
 .venv/
 venv/
-# The model is rebuilt from student_scores.csv during CI and the Render build
-student_score_model.joblib

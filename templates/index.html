@@ -3,35 +3,43 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Student Score Predictor</title>
+  <title>Learning CI/CD</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 420px; margin: 60px auto; padding: 0 16px; color: #222; }
-    .intro { color: #555; }
-    input { padding: 6px; width: 100px; }
-    button { padding: 6px 16px; }
-    .result { margin-top: 20px; font-size: 1.2em; }
-    .error { margin-top: 20px; color: #c00; }
-    .warning { color: #a60; font-size: 0.9em; }
-    footer { margin-top: 40px; color: #777; font-size: 0.85em; }
+    body { font-family: Arial, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #222; line-height: 1.5; }
+    .version { background: #eef6ee; border: 1px solid #9c9; padding: 10px 14px; border-radius: 6px; }
+    code { background: #f2f2f2; padding: 1px 4px; border-radius: 3px; }
   </style>
 </head>
 <body>
-  <h1>Student Score Predictor</h1>
-  <p class="intro">Enter how many hours a student studies per day to predict their percentage score.</p>
+  <h1>Learning CI/CD</h1>
 
-  <form method="post">
-    <label for="hours">Hours studied:</label>
-    <input id="hours" name="hours" type="number" step="0.1" min="0" max="24" value="{{ hours }}" required autofocus>
-    <button type="submit">Predict</button>
-  </form>
+  <!-- Change this line, commit and push, then refresh the live site to watch CI/CD deliver it. -->
+  <p class="version"><strong>Version 1:</strong> Hello! This page was deployed automatically.</p>
 
-  {% if error %}
-    <p class="error">{{ error }}</p>
-  {% elif score %}
-    <p class="result">Predicted score: <strong>{{ score }}%</strong></p>
-    {% if warning %}<p class="warning">{{ warning }}</p>{% endif %}
-  {% endif %}
+  <h2>What is CI/CD?</h2>
+  <p>
+    <strong>CI (Continuous Integration)</strong> means every change you push is automatically
+    checked, for example by running tests, so mistakes are caught early.
+  </p>
+  <p>
+    <strong>CD (Continuous Deployment)</strong> means every change that passes those checks is
+    automatically released to the live website, with no manual upload.
+  </p>
 
-  <footer>Linear regression model: {{ formula }}</footer>
+  <h2>How this page gets here</h2>
+  <ol>
+    <li>You edit this page on your computer and run <code>git push</code>.</li>
+    <li>GitHub Actions starts automatically and runs the tests.</li>
+    <li>If the tests pass, GitHub Actions tells Render to deploy the new code.</li>
+    <li>Render builds and starts the new version of the site.</li>
+    <li>GitHub Actions checks that the live site is running the new code.</li>
+    <li>If any step fails, GitHub emails you and the old version stays live.</li>
+  </ol>
+
+  <h2>Try it</h2>
+  <p>
+    Change the green "Version" line above in <code>templates/index.html</code>, push it, and watch
+    the <strong>Actions</strong> tab on GitHub. A minute or two after it turns green, refresh this page.
+  </p>
 </body>
 </html>
